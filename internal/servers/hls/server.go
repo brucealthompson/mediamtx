@@ -50,6 +50,7 @@ type serverAPIMuxersGetReq struct {
 }
 
 type serverPathManager interface {
+	GetPaths() []string
 	FindPathConf(req defs.PathFindPathConfReq) (*conf.Path, error)
 	AddReader(req defs.PathAddReaderReq) (defs.Path, *stream.Stream, error)
 }

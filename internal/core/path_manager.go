@@ -407,6 +407,15 @@ func (pm *pathManager) closePath(pa *path) {
 	}
 }
 
+// GetPaths gets current active paths
+func (pm *pathManager) GetPaths() []string {
+	var paths []string
+	for path := range pm.paths {
+		paths = append(paths, path)
+	}
+	return paths
+}
+
 // GetConfForPath is called by a reader or publisher.
 func (pm *pathManager) FindPathConf(req defs.PathFindPathConfReq) (*conf.Path, error) {
 	req.Res = make(chan defs.PathFindPathConfRes)

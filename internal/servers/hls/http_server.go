@@ -52,7 +52,41 @@ type httpServer struct {
 
 func (s *httpServer) initialize() error {
 	router := gin.New()
+	gin.SetMode(gin.DebugMode)
 	router.SetTrustedProxies(s.trustedProxies.ToTrustedProxies()) //nolint:errcheck
+	router.HEAD("/version", func(c *gin.Context) {
+		cameras := s.pathManager.GetPaths()
+		camerasvalue := ""
+		for index, camera := range cameras {
+			if index > 0 {
+				camerasvalue += ","
+			}
+			camerasvalue += camera
+		}
+		c.Writer.Header().Add("cameras", camerasvalue)
+		c.Writer.Header().Set("mediamtx", "Version 1.0")
+	})
+	router.LoadHTMLGlob("web/templates/*")
+	router.StaticFS("/static", http.Dir("web/static"))
+	router.GET("/", func(c *gin.Context) {
+		cameras := s.pathManager.GetPaths()
+		activecamera := ""
+		query := c.Request.URL.Query()
+		camera, ok := query["cameraname"]
+		if ok && (len(camera) == 1) && (len(camera[0]) > 0) {
+			activecamera = camera[0]
+		} else if len(cameras) > 0 {
+			activecamera = cameras[0]
+		}
+		//sort.Strings(all)
+		if len(activecamera) > 0 {
+			c.HTML(http.StatusOK, "index.tmpl", gin.H{
+				"suuid":    activecamera,
+				"suuidMap": cameras,
+				"version":  time.Now().String(),
+			})
+		}
+	})
 	router.NoRoute(s.onRequest)
 
 	network, address := restrictnetwork.Restrict("tcp", s.address)
