@@ -58,10 +58,15 @@ func (s *httpServer) initialize() error {
 		cameras := s.pathManager.GetPaths()
 		camerasvalue := ""
 		for index, camera := range cameras {
+			_, cameraup := s.parent.muxers[camera]
+			cameraupstring := "down"
+			if cameraup {
+				cameraupstring = "up"
+			}
 			if index > 0 {
 				camerasvalue += ","
 			}
-			camerasvalue += camera
+			camerasvalue += camera + ":" + cameraupstring
 		}
 		c.Writer.Header().Add("cameras", camerasvalue)
 		c.Writer.Header().Set("mediamtx", "Version 1.0")
