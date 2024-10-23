@@ -72,6 +72,11 @@ func main() {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
+	_, err = rtspservice.GetRtspExe()
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
 	switch *svcFlag {
 	case BeginCmd:
 		switch status {

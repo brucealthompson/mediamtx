@@ -41,7 +41,7 @@ func (p *program) Start(s service.Service) error {
 	return nil
 }
 
-func getRtspExe() (string, error) {
+func GetRtspExe() (string, error) {
 	ex, err := os.Executable()
 	if err != nil {
 		return "", err
@@ -58,7 +58,7 @@ func getRtspExe() (string, error) {
 func (p *program) run() error {
 	logger.Info("Starting mediamtx service.")
 	//time.Sleep(10 * time.Minute)
-	rtspcmd, err := getRtspExe()
+	rtspcmd, err := GetRtspExe()
 	if err != nil {
 		return err
 	}
@@ -109,7 +109,7 @@ func processNameAlive(exename string) (bool, int) {
 func (p *program) Stop(s service.Service) error {
 	// Any work in Stop should be quick, usually a few seconds at most.
 	logger.Info("mediamtx Service Stopping")
-	rtspcmd, err := getRtspExe()
+	rtspcmd, err := GetRtspExe()
 	if err == nil {
 		foundprocess, pid := processNameAlive(rtspcmd)
 		if foundprocess {
